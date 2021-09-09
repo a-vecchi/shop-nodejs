@@ -12,12 +12,15 @@ const errorController = require('./controllers/error');
 const User = require('./models/user');
 
 const MONGODB_URI =
-  'mongodb+srv://avecchi:9u4biljMQc4jjqbe@cluster0-ntrwp.mongodb.net/shop';
+  'mongodb+srv://avecchi:lksdlkdlkfdiiiiss@cluster0.sezm7.mongodb.net/shop?retryWrites=true&w=majority';
 
 const app = express();
 const store = new MongoDBStore({
   uri: MONGODB_URI,
-  collection: 'sessions'
+  collection: 'sessions', 
+  connectionOptions: {keepAlive: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true}
 });
 const csrfProtection = csrf();
 
@@ -66,7 +69,11 @@ app.use(authRoutes);
 app.use(errorController.get404);
 
 mongoose
-  .connect(MONGODB_URI)
+  .connect(MONGODB_URI, {keepAlive: true,
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true})
   .then(result => {
     app.listen(3000);
   })
